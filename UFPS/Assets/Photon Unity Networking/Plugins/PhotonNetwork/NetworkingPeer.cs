@@ -242,7 +242,7 @@ internal class NetworkingPeer : LoadBalancingPeer, IPhotonPeerListener
     #if !UNITY_EDITOR && UNITY_SWITCH
     public const string NameServerHost = "nameserver-eu.cloudapp.net";//set to "ns.exitgames.com" after Nintendo has fixed the traffic manager bug in their dns-resolver for which this is a workaround
     #else
-    public const string NameServerHost = "ns.exitgames.com";
+    public const string NameServerHost = "ns-cn.exitgames.com";// china
     #endif
 
     /// <summary>Name Server for HTTP connections to the Photon Cloud. Includes prefix and port.</summary>

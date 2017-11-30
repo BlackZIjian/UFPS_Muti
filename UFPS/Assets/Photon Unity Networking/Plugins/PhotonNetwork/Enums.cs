@@ -518,6 +518,9 @@ public enum CloudRegionCode
     @in = 10,
     /// <summary>Russia, ru</summary>
     ru = 11,
+    
+	/// <summary>China, cn</summary>
+	cn = 12,
 
     /// <summary>No region selected.</summary>
     none = 4
@@ -541,7 +544,8 @@ public enum CloudRegionFlag
     cae =   1 << 7,
     kr =    1 << 8,
     @in =   1 << 9,
-    ru =    1 << 10
+    ru =    1 << 10,
+	cn =    1 << 11
 };
 
 
