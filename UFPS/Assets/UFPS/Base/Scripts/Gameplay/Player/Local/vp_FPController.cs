@@ -1147,7 +1147,7 @@ public class vp_FPController : vp_CharacterController
 		// a multiplayer script can pick this up and ask the master to push the
 		// rigidbody over the network, as allowed
 		if (vp_Gameplay.IsMultiplayer)
-			vp_TargetEvent<Vector3, Vector3>.Send(body, "Push", hit.moveDirection, hit.point);
+			vp_TargetEvent<Vector3, Vector3,int>.Send(body, "Push", hit.moveDirection, hit.point,viewId);
 		else
 			PushRigidbody(body, hit.moveDirection, hit.point);	// in singleplayer, go ahead and push the rigidbody
 

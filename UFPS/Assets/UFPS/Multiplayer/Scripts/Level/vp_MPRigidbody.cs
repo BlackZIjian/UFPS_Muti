@@ -135,7 +135,6 @@ public class vp_MPRigidbody : Photon.MonoBehaviour
 		// set up the photonview to observe this monobehaviour
 		photonView.ObservedComponents.Add(this);
 		photonView.synchronization = ViewSynchronization.UnreliableOnChange;
-
 	}
 
 

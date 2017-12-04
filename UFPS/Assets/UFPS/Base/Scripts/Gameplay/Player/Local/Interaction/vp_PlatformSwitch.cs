@@ -63,8 +63,15 @@ public class vp_PlatformSwitch : vp_Interactable
 		if (vp_Gameplay.IsMaster)
 			Platform.SendMessage("GoTo", Platform.TargetedWaypoint == 0 ? 1 : 0, SendMessageOptions.DontRequireReceiver);
 		else if (InteractType == vp_InteractType.Normal)
-			this.SendMessage("ClientTryInteract");
-		
+		{
+			vp_MPNetworkPlayer NetworkPlayer = player.transform.root.GetComponent<vp_MPNetworkPlayer>();
+
+			if (NetworkPlayer == null)
+				return false;
+			
+			this.SendMessage("ClientTryInteract", NetworkPlayer.photonView.viewID);
+
+		}
 		m_Timeout = Time.time + SwitchTimeout;
 		
 		m_IsSwitched = !m_IsSwitched;

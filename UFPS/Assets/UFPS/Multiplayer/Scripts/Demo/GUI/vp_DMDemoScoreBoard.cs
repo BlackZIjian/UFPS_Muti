@@ -446,19 +446,21 @@ public class vp_DMDemoScoreBoard : Photon.MonoBehaviour
 		{
 
 			DrawLabel(vp_MPNetworkPlayer.GetName(playerID), new Vector2(100, m_Pos.y));
-
-			foreach (string s in VisibleStatNames)
+			foreach (var pair in vp_MPNetworkPlayer.PlayersByID[playerID])
 			{
+				foreach (string s in VisibleStatNames)
+				{
 
-				object stat = vp_MPNetworkPlayer.Get(playerID).Stats.Get(s);
-				string statOut = stat.ToString();
+					object stat = vp_MPNetworkPlayer.Get(playerID,pair.Key).Stats.Get(s);
+					string statOut = stat.ToString();
 
 
-				DrawLabel(statOut.ToString(), m_Pos);
-				m_Pos.x += 100;
+					DrawLabel(statOut.ToString(), m_Pos);
+					m_Pos.x += 100;
+				}
+				m_Pos.x = 200;
+				m_Pos.y += 20;
 			}
-			m_Pos.x = 200;
-			m_Pos.y += 20;
 		}
 
 	}

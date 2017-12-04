@@ -26,6 +26,19 @@ public class vp_CharacterController : vp_Controller
 {
 
 
+	protected vp_MPNetworkPlayer _networkPlayer;
+	protected int viewId
+	{
+		get
+		{
+			if (_networkPlayer == null)
+				_networkPlayer = GetComponent<vp_MPNetworkPlayer>();
+			if (_networkPlayer == null)
+				return 0;
+			return _networkPlayer.photonView.viewID;
+		}
+	}
+	
 	private CharacterController m_CharacterController = null;
 	public CharacterController CharacterController
 	{

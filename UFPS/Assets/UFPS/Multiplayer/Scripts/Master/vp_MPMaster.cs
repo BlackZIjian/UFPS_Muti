@@ -390,10 +390,10 @@ public class vp_MPMaster : Photon.MonoBehaviour
 		{
 			if (player == null)
 				continue;
-			// add a player stats hashtable with the key 'player.ID'
+			// add a player stats hashtable with the key 'player.viewID'
 			ExitGames.Client.Photon.Hashtable stats = player.Stats.All;
 			if (stats != null)
-				state.Add(player.ID, stats);
+				state.Add(player.photonView.viewID, stats);
 		}
 
 		// -------- add the health of all non-player damagehandlers --------
@@ -467,7 +467,8 @@ public class vp_MPMaster : Photon.MonoBehaviour
 				Debug.LogWarning("Warning (" + this + ") Trying to add same player twice to a partial game state (not good). Duplicates will be ignored.");
 				continue;
 			}
-			state.Add(playerIDs[v], ExtractPlayerStats(vp_MPNetworkPlayer.Get(playerIDs[v]), stats));
+			state.Add(playerIDs[v], ExtractPlayerStats(vp_MPNetworkPlayer.Get(playerIDs[v] / PhotonNetwork.MAX_VIEW_IDS, playerIDs[v]), stats));
+
 		}
 
 		return state;
@@ -486,17 +487,20 @@ public class vp_MPMaster : Photon.MonoBehaviour
 	{
 
 		ExitGames.Client.Photon.Hashtable state = new ExitGames.Client.Photon.Hashtable();
-		
+
 		for (int v = 0; v < playerIDs.Length; v++)
 		{
-			if (state.ContainsKey(playerIDs[v]))	// safety measure in case int array has duplicate id:s
+			if (state.ContainsKey(playerIDs[v])) // safety measure in case int array has duplicate id:s
 			{
-				Debug.LogWarning("Warning (" + this + ") Trying to add same player twice to a partial game state (not good). Duplicates will be ignored.");
+				Debug.LogWarning("Warning (" + this +
+				                 ") Trying to add same player twice to a partial game state (not good). Duplicates will be ignored.");
 				continue;
 			}
-			state.Add(playerIDs[v], ExtractPlayerStats(vp_MPNetworkPlayer.Get(playerIDs[v]), stats[v]));
+			state.Add(playerIDs[v], ExtractPlayerStats(vp_MPNetworkPlayer.Get(playerIDs[v] / PhotonNetwork.MAX_VIEW_IDS, playerIDs[v]), stats[v]));
 
 		}
+
+
 
 		return state;
 
@@ -674,8 +678,15 @@ public class vp_MPMaster : Photon.MonoBehaviour
 
 		}
 
+		string aiTypeName = vp_MPPlayerSpawner.GetAIPlayerType().name;
+
 		// spawn
-		photonView.RPC("ReceiveInitialSpawnInfo", PhotonTargets.All, id, player, placement.Position, placement.Rotation, playerTypeName, teamNumber);
+		photonView.RPC("ReceiveInitialSpawnInfo", PhotonTargets.All, id, player, placement.Position, placement.Rotation, playerTypeName, teamNumber,0);
+
+		// spawn 2 ai 
+		photonView.RPC("ReceiveInitialSpawnInfo", PhotonTargets.All, id, player, placement.Position, placement.Rotation, aiTypeName, teamNumber,1);
+		photonView.RPC("ReceiveInitialSpawnInfo", PhotonTargets.All, id, player, placement.Position, placement.Rotation, aiTypeName, teamNumber,2);
+
 
 		// if JOINING player is the master, refresh the game clock since
 		// there are no other players and the game needs to get started
@@ -851,7 +862,7 @@ public class vp_MPMaster : Photon.MonoBehaviour
 				continue;
 
 			object stats;
-			if (gameState.TryGetValue(player.ID, out stats) && (stats != null))
+			if (gameState.TryGetValue(player.photonView.viewID, out stats) && (stats != null))
 				player.Stats.SetFromHashtable((ExitGames.Client.Photon.Hashtable)stats);
 			//else
 			//    vp_MPDebug.Log("Failed to extract player " + player.ID + " stats from gamestate");
@@ -951,7 +962,8 @@ public class vp_MPMaster : Photon.MonoBehaviour
 			{
 				object player;
 				gameState.TryGetValue(key, out player);
-				s += vp_MPNetworkPlayer.GetName((int)key) + ":\n";
+				int ID = ((int) key) / PhotonNetwork.MAX_VIEW_IDS;
+				s += vp_MPNetworkPlayer.GetName(ID) + ":\n";
 
 				foreach (object o in ((ExitGames.Client.Photon.Hashtable)player).Keys)
 				{

@@ -54,7 +54,7 @@ public class vp_MPPlatformSwitch : Photon.MonoBehaviour
 	/// switch in a non-master scene using their 'Interact' key
 	/// (default: F) 
 	/// </summary>
-	public void ClientTryInteract()
+	public void ClientTryInteract(int viewId)
 	{
 
 		if (!vp_Gameplay.IsMultiplayer)
@@ -65,7 +65,7 @@ public class vp_MPPlatformSwitch : Photon.MonoBehaviour
 
 		// send a message to the master client requesting to interact
 		// with this switch
-		photonView.RPC("RequestInteraction", PhotonTargets.MasterClient);
+		photonView.RPC("RequestInteraction", PhotonTargets.MasterClient,viewId);
 
 	}
 
@@ -75,7 +75,7 @@ public class vp_MPPlatformSwitch : Photon.MonoBehaviour
 	/// who wishes to enable a switch in the master scene
 	/// </summary>
 	[PunRPC]
-	void RequestInteraction(PhotonMessageInfo info)
+	void RequestInteraction(int viewId,PhotonMessageInfo info)
 	{
 
 		if (!vp_Gameplay.IsMaster)
@@ -85,7 +85,7 @@ public class vp_MPPlatformSwitch : Photon.MonoBehaviour
 			return;
 
 		// find the networkplayer corresponding to the sender id
-		vp_MPNetworkPlayer player = vp_MPNetworkPlayer.Get(info.sender.ID);
+		vp_MPNetworkPlayer player = vp_MPNetworkPlayer.Get(info.sender.ID,viewId);
 
 		// abort if no such player
 		if (player == null)

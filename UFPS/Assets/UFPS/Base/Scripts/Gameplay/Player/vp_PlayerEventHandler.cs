@@ -28,7 +28,7 @@ public class vp_PlayerEventHandler : vp_StateEventHandler
 	// can search the project for the event name preceded by '.' (.Reload)
 	//  3) to find the methods that LISTEN to an event, search the project
 	// for its name preceded by '_' (_Reload)
-
+	
 	// player type
 	public vp_Value<bool> IsFirstPerson;	// always returns true if this a local player in 1st person mode, false if 3rd person mode or multiplayer remote player or AI
 	public vp_Value<bool> IsLocal;			// returns true if a vp_FPCamera is present on this player

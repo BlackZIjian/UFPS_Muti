@@ -179,7 +179,7 @@ public class vp_MPPickupManager : Photon.MonoBehaviour
 
 		//Debug.Log(pickup + " with ID: " + pickup.ID + " was picked up on Master by player " + player.ID);
 
-		photonView.RPC("ReceivePickup", PhotonTargets.Others, pickup.ID, player.ID);
+		photonView.RPC("ReceivePickup", PhotonTargets.Others, pickup.ID, player.ID,player.photonView.viewID);
 
 	}
 
@@ -204,7 +204,7 @@ public class vp_MPPickupManager : Photon.MonoBehaviour
 	/// responds to master giving a pickup to a player over the network
 	/// </summary>
 	[PunRPC]
-	void ReceivePickup(int id, int playerID, PhotonMessageInfo info)
+	void ReceivePickup(int id, int playerID,int viewId, PhotonMessageInfo info)
 	{
 
 		if (!info.sender.isMasterClient)
@@ -218,7 +218,11 @@ public class vp_MPPickupManager : Photon.MonoBehaviour
 			vp_Utility.Activate(pickups[0].gameObject, false);
 
 		vp_MPNetworkPlayer player;
-		if (!vp_MPNetworkPlayer.PlayersByID.TryGetValue(playerID, out player))
+		Dictionary<int, vp_MPNetworkPlayer> dic;
+		if (!vp_MPNetworkPlayer.PlayersByID.TryGetValue(playerID, out dic))
+			return;
+		
+		if(!dic.TryGetValue(viewId,out player))
 			return;
 
 		if (player == null)

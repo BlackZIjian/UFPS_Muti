@@ -178,22 +178,22 @@ public abstract partial class vp_MPNetworkPlayer : Photon.MonoBehaviour
 	/// TODO: this dictionary should not be public since it is not as reliable
 	/// as the public 'Players' dictionary, or as using the Get(id) method.
 	/// </summary>
-	public static Dictionary<int, vp_MPNetworkPlayer> PlayersByID
+	public static Dictionary<int, Dictionary<int,vp_MPNetworkPlayer>> PlayersByID
 	{
 		get
 		{
 			if (m_PlayersByID == null)
-				m_PlayersByID = new Dictionary<int, vp_MPNetworkPlayer>();
+				m_PlayersByID = new Dictionary<int, Dictionary<int,vp_MPNetworkPlayer>>();
 			return m_PlayersByID;
 		}
 	}
-	protected static Dictionary<int, vp_MPNetworkPlayer> m_PlayersByID = null;
+	protected static Dictionary<int, Dictionary<int,vp_MPNetworkPlayer>> m_PlayersByID = null;
 
 	
 	/// <summary>
 	/// a keycollection returning the integer IDs of all players
 	/// </summary>
-	public static Dictionary<int, vp_MPNetworkPlayer>.KeyCollection IDs
+	public static Dictionary<int, Dictionary<int,vp_MPNetworkPlayer>>.KeyCollection IDs
 	{
 		get
 		{
@@ -306,10 +306,31 @@ public abstract partial class vp_MPNetworkPlayer : Photon.MonoBehaviour
 				continue;
 			}
 
-			if (!PlayersByID.ContainsValue(player))
+			bool isHave = false;
+			foreach (var pair in PlayersByID)
 			{
-				if(player.ID != 0)
-					PlayersByID.Add(player.ID, player);
+				if (pair.Value != null && pair.Value.ContainsValue(player))
+				{
+					isHave = true;
+					break;
+				}
+			}
+
+			if (!isHave)
+			{
+				if (player.ID != 0)
+				{
+					if (!PlayersByID.ContainsKey(player.ID) || PlayersByID[player.ID] == null)
+					{
+						Dictionary<int, vp_MPNetworkPlayer> dic = new Dictionary<int, vp_MPNetworkPlayer>();
+						dic[player.photonView.viewID] = player;
+						PlayersByID.Add(player.ID, dic);
+					}
+					else
+					{
+						PlayersByID[player.ID][player.photonView.viewID] = player;
+					}
+				}
 			}
 
 		}
@@ -317,9 +338,9 @@ public abstract partial class vp_MPNetworkPlayer : Photon.MonoBehaviour
 		// find ids that have no player
 		foreach (int key in PlayersByID.Keys)
 		{
-			vp_MPNetworkPlayer player;
+			Dictionary<int,vp_MPNetworkPlayer> player;
 			PlayersByID.TryGetValue(key, out player);
-			if (player == null)
+			if (player == null || player.Count == 0)
 			{
 				if (nullIDs == null)
 					nullIDs = new List<int>();
@@ -431,22 +452,39 @@ public abstract partial class vp_MPNetworkPlayer : Photon.MonoBehaviour
 
 	/// <summary>
 	/// returns the vp_MPNetworkPlayer associated with a certain
-	/// photon player id
+	/// photon player id and viewId
 	/// </summary>
-	public static vp_MPNetworkPlayer Get(int id)
+	public static vp_MPNetworkPlayer Get(int id,int viewId)
 	{
-
+		Dictionary<int, vp_MPNetworkPlayer> dic;
 		vp_MPNetworkPlayer player = null;
-		if (!PlayersByID.TryGetValue(id, out player))
+		if (!PlayersByID.TryGetValue(id, out dic) || dic == null)
 		{
 			foreach (vp_MPNetworkPlayer p in Players.Values)
 			{
 				if (p == null)
 					continue;
-				if (p.ID == id)
+				if (p.ID == id && p.photonView.viewID == viewId)
 				{
-					PlayersByID.Add(id, p);
+					dic = new Dictionary<int, vp_MPNetworkPlayer>();
+					PlayersByID[id] = dic;
 					return p;
+				}
+			}
+		}
+		else
+		{
+			if (!dic.TryGetValue(viewId,out player))
+			{
+				foreach (vp_MPNetworkPlayer p in Players.Values)
+				{
+					if (p == null)
+						continue;
+					if (p.ID == id && p.photonView.viewID == viewId)
+					{
+						PlayersByID[id][viewId] = p;
+						return p;
+					}
 				}
 			}
 		}

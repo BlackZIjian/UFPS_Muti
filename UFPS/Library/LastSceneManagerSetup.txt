@@ -1,4 +1,4 @@
 sceneSetups:
-- path: Assets/UFPS(AI)/TestAI.unity
+- path: Assets/UFPS/Multiplayer/Content/Levels/Examples/UFPSMP_TestMap_Menu.unity
   isLoaded: 1
   isActive: 1

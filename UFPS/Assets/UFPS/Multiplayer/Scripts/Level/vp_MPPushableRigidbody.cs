@@ -45,8 +45,8 @@ public class vp_MPPushableRigidbody : vp_MPRigidbody
 	protected float m_NextAllowedPushTime = 0.0f;
 
 	// register / unregister the 'Push' event
-	protected virtual void OnEnable()	{	vp_TargetEvent<Vector3, Vector3>.Register(Rigidbody, "Push", Push);		}
-	protected virtual void OnDisable()	{	vp_TargetEvent<Vector3, Vector3>.Unregister(Rigidbody, "Push", Push);	}
+	protected virtual void OnEnable()	{	vp_TargetEvent<Vector3, Vector3,int>.Register(Rigidbody, "Push", Push);		}
+	protected virtual void OnDisable()	{	vp_TargetEvent<Vector3, Vector3,int>.Unregister(Rigidbody, "Push", Push);	}
 
 		
 	/// <summary>
@@ -55,13 +55,13 @@ public class vp_MPPushableRigidbody : vp_MPRigidbody
 	/// characters kicking around smaller objects like crates and furniture.
 	/// this gets called from vp_FPController by default
 	/// </summary>
-	protected virtual void Push(Vector3 direction, Vector3 point)
+	protected virtual void Push(Vector3 direction, Vector3 point,int viewId)
 	{
 
 		if (PhotonNetwork.offlineMode)
 			return;
 
-		photonView.RPC("RequestPushRigidBody", PhotonTargets.MasterClient, direction, point);
+		photonView.RPC("RequestPushRigidBody", PhotonTargets.MasterClient, direction, point,viewId);
 
 	}
 
@@ -73,7 +73,7 @@ public class vp_MPPushableRigidbody : vp_MPRigidbody
 	/// by this script across all clients
 	/// </summary>
 	[PunRPC]
-	protected virtual void RequestPushRigidBody(Vector3 direction, Vector3 point, PhotonMessageInfo info)
+	protected virtual void RequestPushRigidBody(Vector3 direction, Vector3 point, int viewID ,PhotonMessageInfo info)
 	{
 
 		// abort if this machine does not have authority to push things
@@ -86,7 +86,7 @@ public class vp_MPPushableRigidbody : vp_MPRigidbody
 		m_NextAllowedPushTime = Time.time + MinPushInterval;
 
 		// find the networkplayer corresponding to the sender id
-		vp_MPNetworkPlayer player = vp_MPNetworkPlayer.Get(info.sender.ID);
+		vp_MPNetworkPlayer player = vp_MPNetworkPlayer.Get(info.sender.ID,viewID);
 
 		// abort if no such player
 		if (player == null)

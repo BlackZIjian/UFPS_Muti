@@ -141,7 +141,11 @@ public class vp_MPMovingPlatform : vp_MPRigidbody
 		if (!MovingPlatform.GetPlayer(col))
 			return;
 
-		photonView.RPC("RequestAutoStart", PhotonTargets.MasterClient);
+		vp_MPNetworkPlayer NetworkPlayer = col.transform.root.GetComponent<vp_MPNetworkPlayer>();
+
+		if (NetworkPlayer == null)
+			return;
+		photonView.RPC("RequestAutoStart", PhotonTargets.MasterClient,NetworkPlayer.photonView.viewID);
 
 	}
 
@@ -150,7 +154,7 @@ public class vp_MPMovingPlatform : vp_MPRigidbody
 	/// 
 	/// </summary>
 	[PunRPC]
-	void RequestAutoStart(PhotonMessageInfo info)
+	void RequestAutoStart(int viewId,PhotonMessageInfo info)
 	{
 
 		if (!vp_Gameplay.IsMaster)
@@ -161,7 +165,7 @@ public class vp_MPMovingPlatform : vp_MPRigidbody
 			return;
 
 		// find the networkplayer corresponding to the sender id
-		vp_MPNetworkPlayer player = vp_MPNetworkPlayer.Get(info.sender.ID);
+		vp_MPNetworkPlayer player = vp_MPNetworkPlayer.Get(info.sender.ID,viewId);
 
 		// abort if no such player
 		if (player == null)

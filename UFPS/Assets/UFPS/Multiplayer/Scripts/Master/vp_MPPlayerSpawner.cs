@@ -244,7 +244,7 @@ public class vp_MPPlayerSpawner : Photon.MonoBehaviour
 	/// spawn info can only be issued by the master client
 	/// </summary>
 	[PunRPC]
-	void ReceiveInitialSpawnInfo(int id, PhotonPlayer player, Vector3 pos, Quaternion rot, string playerTypeName, int teamNumber, PhotonMessageInfo info)
+	void ReceiveInitialSpawnInfo(int id, PhotonPlayer player, Vector3 pos, Quaternion rot, string playerTypeName, int teamNumber,int aiNum,PhotonMessageInfo info)
 	{
 		
 		if ((info.sender != PhotonNetwork.masterClient) &&
@@ -299,7 +299,7 @@ public class vp_MPPlayerSpawner : Photon.MonoBehaviour
 			});
 		}
 
-		InstantiatePlayerPrefab(player, stats);
+		InstantiatePlayerPrefab(player, stats,aiNum);
 
 	}
 
@@ -308,7 +308,7 @@ public class vp_MPPlayerSpawner : Photon.MonoBehaviour
 	/// creates a new player gameobject in the scene based on a photon
 	/// player and a playerstats hashtable
 	/// </summary>
-	public static void InstantiatePlayerPrefab(PhotonPlayer player, ExitGames.Client.Photon.Hashtable playerStats)
+	public static void InstantiatePlayerPrefab(PhotonPlayer player, ExitGames.Client.Photon.Hashtable playerStats,int aiNum)
 	{
 
 		if (player == null)
@@ -343,22 +343,42 @@ public class vp_MPPlayerSpawner : Photon.MonoBehaviour
 			vp_MPRemotePlayer r = newPlayer.GetComponentInChildren<vp_MPRemotePlayer>();
 			if (r != null)
 				Component.Destroy(r);
-			vp_MPLocalPlayer l = newPlayer.GetComponentInChildren<vp_MPLocalPlayer>();
-			if (l == null)
-				l = newPlayer.AddComponent<vp_MPLocalPlayer>();
-			
-			Instance.AddPrefabs(newPlayer.transform, Instance.m_AddPrefabs.Local);
-			Instance.AddComponents(newPlayer.transform, Instance.m_AddComponents.Local);
+			if (IsAIType(playerType))
+			{
+				vp_LocalAIPlayer l = newPlayer.GetComponentInChildren<vp_LocalAIPlayer>();
+				if (l == null)
+					l = newPlayer.AddComponent<vp_LocalAIPlayer>();
 
-			// initialize the localplayer's stats hashtable with the entire 'playerStats'
-			l.Stats.SetFromHashtable(playerStats);
+				Instance.AddPrefabs(newPlayer.transform, Instance.m_AddPrefabs.Local);
+				Instance.AddComponents(newPlayer.transform, Instance.m_AddComponents.Local);
 
-			AddPhotonViewToPlayer(l, player.ID);
+				// initialize the localplayer's stats hashtable with the entire 'playerStats'
+				l.Stats.SetFromHashtable(playerStats);
 
-			// show/hide 3rd person weapons on the spawned player	// TODO: move to RefreshPlayers
-			if(l.WeaponHandler != null)
-				l.WeaponHandler.RefreshAllWeapons();
+				AddPhotonViewToPlayer(l, player.ID,aiNum);
 
+				// show/hide 3rd person weapons on the spawned player	// TODO: move to RefreshPlayers
+				if (l.WeaponHandler != null)
+					l.WeaponHandler.RefreshAllWeapons();
+			}
+			else
+			{
+				vp_MPLocalPlayer l = newPlayer.GetComponentInChildren<vp_MPLocalPlayer>();
+				if (l == null)
+					l = newPlayer.AddComponent<vp_MPLocalPlayer>();
+
+				Instance.AddPrefabs(newPlayer.transform, Instance.m_AddPrefabs.Local);
+				Instance.AddComponents(newPlayer.transform, Instance.m_AddComponents.Local);
+
+				// initialize the localplayer's stats hashtable with the entire 'playerStats'
+				l.Stats.SetFromHashtable(playerStats);
+
+				AddPhotonViewToPlayer(l, player.ID,aiNum);
+
+				// show/hide 3rd person weapons on the spawned player	// TODO: move to RefreshPlayers
+				if (l.WeaponHandler != null)
+					l.WeaponHandler.RefreshAllWeapons();
+			}
 		}
 		else
 		{
@@ -373,6 +393,9 @@ public class vp_MPPlayerSpawner : Photon.MonoBehaviour
 			vp_MPLocalPlayer l = newPlayer.GetComponentInChildren<vp_MPLocalPlayer>();
 			if (l != null)
 				Component.Destroy(l);
+			vp_LocalAIPlayer al = newPlayer.GetComponentInChildren<vp_LocalAIPlayer>();
+			if (al != null)
+				Component.Destroy(al);
 			vp_MPRemotePlayer r = newPlayer.GetComponentInChildren<vp_MPRemotePlayer>();
 			if (r == null)
 				r = newPlayer.AddComponent<vp_MPRemotePlayer>();
@@ -389,7 +412,7 @@ public class vp_MPPlayerSpawner : Photon.MonoBehaviour
 			//	r.Inventory.Clear();
 			r.Stats.SetFromHashtable(playerStats);
 
-			AddPhotonViewToPlayer(r, player.ID);
+			AddPhotonViewToPlayer(r, player.ID,aiNum);
 
 			// show/hide 3rd person weapons on the spawned player
 			if (r.WeaponHandler != null)
@@ -413,7 +436,7 @@ public class vp_MPPlayerSpawner : Photon.MonoBehaviour
 	{
 
 		// fetch all photonviews	// TODO: optimize?
-		PhotonView[] views = Component.FindObjectsOfType(typeof(PhotonView)) as PhotonView[];
+		//PhotonView[] views = Component.FindObjectsOfType(typeof(PhotonView)) as PhotonView[];
 
 		foreach (object o in gameState.Keys)
 		{
@@ -423,16 +446,10 @@ public class vp_MPPlayerSpawner : Photon.MonoBehaviour
 				continue;
 			//Debug.Log("4 GAME STATE PLAYER -> " + o.ToString());
 
-			int id = (int)o;
-			bool hasView = false;
-			foreach (PhotonView f in views)
-			{
-				//Debug.Log("5: " + f.ToString());
-
-				if (f.ownerId == id)
-					hasView = true;
-			}
-			if (hasView)
+			int viewId = (int)o;
+			int id = viewId / PhotonNetwork.MAX_VIEW_IDS;
+			
+			if (PhotonView.Find(viewId) != null)
 				continue;
 			//Debug.Log("6: NEED TO SPAWN PLAYER -> " + o.ToString());
 
@@ -456,7 +473,7 @@ public class vp_MPPlayerSpawner : Photon.MonoBehaviour
 				continue;
 			}
 
-			vp_MPPlayerSpawner.InstantiatePlayerPrefab(player, playerStats);
+			vp_MPPlayerSpawner.InstantiatePlayerPrefab(player, playerStats,(viewId - id * 1000) / 10);
 
 		}
 
@@ -544,13 +561,13 @@ public class vp_MPPlayerSpawner : Photon.MonoBehaviour
 	/// <summary>
 	/// 
 	/// </summary>
-	static void AddPhotonViewToPlayer(vp_MPNetworkPlayer networkPlayer, int id)
+	static void AddPhotonViewToPlayer(vp_MPNetworkPlayer networkPlayer, int id,int aiNum)
 	{
 		PhotonView p = null;
 
 		p = (PhotonView)networkPlayer.gameObject.AddComponent<PhotonView>();
 
-		p.viewID = (id * 1000) + 1;	// TODO: may crash with 'array index out of range' if a player is deactivated in its prefab
+		p.viewID = (id * 1000) + 1 + (aiNum * 10);	// TODO: may crash with 'array index out of range' if a player is deactivated in its prefab
 		p.onSerializeTransformOption = OnSerializeTransform.OnlyPosition;
 		p.ObservedComponents = new List<Component>();
 		p.ObservedComponents.Add(networkPlayer);
@@ -639,6 +656,38 @@ public class vp_MPPlayerSpawner : Photon.MonoBehaviour
 
 		return Instance.AvailablePlayerTypes[0];
 
+	}
+	/// <summary>
+	/// returns the default player type (if any)
+	/// </summary>
+	public static vp_MPPlayerType GetAIPlayerType()
+	{
+
+		if (Instance == null)
+			return null;
+
+		if(Instance.AvailablePlayerTypes == null)
+			return null;
+
+		if (Instance.AvailablePlayerTypes.Count < 1)
+			return null;
+
+		return Instance.AvailablePlayerTypes[1];
+
+	}
+
+	public static bool IsAIType(vp_MPPlayerType type)
+	{
+		if (Instance == null)
+			return false;
+
+		if(Instance.AvailablePlayerTypes == null)
+			return false;
+
+		if (Instance.AvailablePlayerTypes.Count < 1)
+			return false;
+
+		return type == Instance.AvailablePlayerTypes[1];
 	}
 	
 

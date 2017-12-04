@@ -95,13 +95,13 @@ public class vp_DMDamageCallbacks : vp_MPDamageCallbacks
 		//     adding the same key twice to a hashtable is impossible
 		if (target != source)	// kill
 		{
-			vp_MPMaster.Instance.TransmitPlayerState(new int[] { target.ID, source.ID },
+			vp_MPMaster.Instance.TransmitPlayerState(new int[] { target.photonView.viewID, source.photonView.viewID },
 				new string[] { "Deaths", "Score" },
 				new string[] { "Frags", "Score" });
 		}
 		else	// suicide
 		{
-			vp_MPMaster.Instance.TransmitPlayerState(new int[] { target.ID },
+			vp_MPMaster.Instance.TransmitPlayerState(new int[] { target.photonView.viewID },
 				new string[] { "Deaths", "Score" });
 		}
 		
