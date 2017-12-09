@@ -25,8 +25,6 @@ public class vp_AIInputEditor : Editor
 	// NOTE: these are static so they remain open when toggling
 	// between different components. this simplifies copying
 	// content (prefabs / sounds) between components
-	public static bool m_MouseCursorFoldout;
-	public static bool m_MouseLookFoldout;
 	public static bool m_StateFoldout;
 	public static bool m_PresetFoldout = true;
 
@@ -73,7 +71,6 @@ public class vp_AIInputEditor : Editor
 
 		if (Application.isPlaying || m_Component.DefaultState.TextAsset == null)
 		{
-			DoMouseCursorFoldout();
 
 		}
 		else
@@ -109,47 +106,6 @@ public class vp_AIInputEditor : Editor
 
 	}
 
-
-	/// <summary>
-	/// 
-	/// </summary>
-	public virtual void DoMouseCursorFoldout()
-	{
-
-		m_MouseCursorFoldout = EditorGUILayout.Foldout(m_MouseCursorFoldout, "Mouse Cursor");
-		if (m_MouseCursorFoldout)
-		{
-
-			m_Component.MouseCursorForced = EditorGUILayout.Toggle("Forced (always shown)", m_Component.MouseCursorForced);
-			m_Component.MouseCursorBlocksMouseLook = EditorGUILayout.Toggle("Blocks Mouselook", m_Component.MouseCursorBlocksMouseLook);
-			GUILayout.BeginHorizontal();
-			GUILayout.Label("Mouse Cursor Zones");
-			GUILayout.EndHorizontal();
-
-			for (int v = m_Component.MouseCursorZones.Length - 1; v > -1; v--)
-			{
-				GUILayout.BeginHorizontal();
-				m_Component.MouseCursorZones[v] = EditorGUILayout.RectField(m_Component.MouseCursorZones[v]);
-				if (GUILayout.Button("X", vp_EditorGUIUtility.SmallButtonStyle, GUILayout.MinWidth(15), GUILayout.MaxWidth(15), GUILayout.MinHeight(15)))
-				{
-					List<Rect> l = new List<Rect>(m_Component.MouseCursorZones);
-					l.RemoveAt(v);
-					m_Component.MouseCursorZones = l.ToArray();
-				}
-				GUILayout.EndHorizontal();
-			}
-			if (GUILayout.Button("Add Zone", GUILayout.MinWidth(90), GUILayout.MaxWidth(90)))
-			{
-				List<Rect> l = new List<Rect>(m_Component.MouseCursorZones);
-				l.Add(new Rect());
-				m_Component.MouseCursorZones = l.ToArray();
-			}
-
-			vp_EditorGUIUtility.Separator();
-
-		}
-
-	}
 
 
 	

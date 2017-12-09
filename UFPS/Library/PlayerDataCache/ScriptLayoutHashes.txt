@@ -284,6 +284,7 @@ ddbeab80e9933b8411c5c1084b84e32f Assembly-CSharp.dll:.vp_Explosion
 3589055682217908f2cd129563176f54 Assembly-CSharp.dll:.vp_Weapon
 293b3d08f8607df9b4483b0dc4d8d5d6 Assembly-CSharp.dll:.ColorPerPlayer
 05524b8f659e7bfe5756d1335fec24ba Assembly-CSharp.dll:.NetworkCharacter
+9d1049729e478cbf8eafc9ecbdc226fd Assembly-CSharp.dll:.vp_LocalAIPlayer
 2165accb3ea2740b87b88a727c43d0b3 Assembly-CSharp.dll:.PickupDemoGui
 5f1ee95103896e75aa6e6b415add844b Assembly-CSharp.dll:.ChannelSelector
 0f218c6b4ce0d6f05ceeb0e42a3a0ee7 Assembly-CSharp.dll:.vp_FPController
@@ -506,4 +507,7 @@ a9e1c36c671666e79706791e556d5100 Vuforia.UnityExtensions.dll:Vuforia.VuMarkBehav
 05524b8f659e7bfe5756d1335fec24ba Vuforia.UnityExtensions.dll:Vuforia.WireframeTrackableEventHandler
 15bea26698002c6c4a3087131232ce5c Vuforia.UnityExtensions.dll:Vuforia.WordBehaviour
 54a26a95db9c623b6eb6fc01ae3ef891 Assembly-CSharp.dll:.CubeExtra
-9d1049729e478cbf8eafc9ecbdc226fd Assembly-CSharp.dll:.vp_LocalAIPlayer
+05524b8f659e7bfe5756d1335fec24ba Assembly-CSharp.dll:.vp_AIPlayerEventHandler
+eaadf17221c034fca52f799a78771e13 Assembly-CSharp.dll:.vp_AICamera
+28fb97375a8fca1ac481d3dea2dbc0c5 Assembly-CSharp.dll:.vp_AIBodyAnimator
+193f2e2ad9963dd8555bcfbce5fc2ee7 Assembly-CSharp.dll:.vp_AIRogball

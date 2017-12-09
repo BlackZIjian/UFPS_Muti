@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using BehaviorDesigner.Runtime;
 using BehaviorDesigner.Runtime.Tasks;
 using UnityEngine;
 
@@ -29,17 +30,17 @@ public class AIInput : Action
     /// <summary>
     /// Move:Horizontal,SetWeapons:-1:Prev,-2:Next,0:Clear,-3:nothing
     /// </summary>
-    public float value1;
+    public SharedFloat value1;
 
     /// <summary>
     /// Move:Vertical
     /// </summary>
-    public float value2;
+    public SharedFloat value2;
 
     /// <summary>
     /// Button:button
     /// </summary>
-    public string value3;
+    public SharedString value3;
 
     private vp_AIInput mAIInput;
 
@@ -62,8 +63,8 @@ public class AIInput : Action
 
         if (MInputType == InputType.Move)
         {
-            mAIInput.HorizontalAxis = value1;
-            mAIInput.VerticalAxis = value2;
+            mAIInput.HorizontalAxis = value1.Value;
+            mAIInput.VerticalAxis = value2.Value;
             return TaskStatus.Success;
         }
 
@@ -107,50 +108,50 @@ public class AIInput : Action
         }
         if (MInputType == InputType.SetWeapon)
         {
-            mAIInput.SetWeapon = (int) value1;
-            if ((int) value1 == -1)
+            mAIInput.SetWeapon = (int) value1.Value;
+            if ((int) value1.Value == -1)
             {
                 mAIInput.GetButtonDown["SetPrevWeapon"] = true;
             }
-            else if((int) value1 == -2)
+            else if((int) value1.Value == -2)
             {
                 mAIInput.GetButtonDown["SetNextWeapon"] = true;
             }
-            else if((int) value1 == 0)
+            else if((int) value1.Value == 0)
             {
                 mAIInput.GetButtonDown["ClearWeapon"] = true;
             }
-            else if((int) value1 <= 10 && (int)value1 > 0)
+            else if((int) value1.Value <= 10 && (int)value1.Value > 0)
             {
-                mAIInput.GetButtonDown["SetWeapon" + (int) value1] = true;
+                mAIInput.GetButtonDown["SetWeapon" + (int) value1.Value] = true;
             }
             return TaskStatus.Success;
         }
         if (MInputType == InputType.MouseLook)
         {
-            mAIInput.MouseX = value1;
-            mAIInput.MouseY = value2;
+            mAIInput.MouseX = value1.Value;
+            mAIInput.MouseY = value2.Value;
             return TaskStatus.Success;
         }
         if (MInputType == InputType.MouseRawLook)
         {
-            mAIInput.MouseXRaw = value1;
-            mAIInput.MouseYRaw = value2;
+            mAIInput.MouseXRaw = value1.Value;
+            mAIInput.MouseYRaw = value2.Value;
             return TaskStatus.Success;
         }
         if (MInputType == InputType.Button)
         {
-            mAIInput.GetButton[value3] = true;
+            mAIInput.GetButton[value3.Value] = true;
             return TaskStatus.Success;
         }
         if (MInputType == InputType.ButtonUp)
         {
-            mAIInput.GetButtonUp[value3] = true;
+            mAIInput.GetButtonUp[value3.Value] = true;
             return TaskStatus.Success;
         }
         if (MInputType == InputType.ButtonDown)
         {
-            mAIInput.GetButtonDown[value3] = true;
+            mAIInput.GetButtonDown[value3.Value] = true;
             return TaskStatus.Success;
         }
         return TaskStatus.Failure;
