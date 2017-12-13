@@ -61,7 +61,7 @@ public class PlayerTransform : MonoBehaviour
 		get { return _id; }
 	}
 
-	public Transform Head;
+	public Transform Body;
 
 	private void OnEnable()
 	{

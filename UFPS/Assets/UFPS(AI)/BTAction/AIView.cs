@@ -43,10 +43,10 @@ public class AIView : Action {
             {
                 continue;
             }
-            pair.Key.distance = Vector3.Distance(transform.position, pair.Value.Head.transform.position);
+            pair.Key.distance = Vector3.Distance(transform.position, pair.Value.Body.transform.position);
             Vector3 pos = _camera.WorldToViewportPoint(pair.Value.transform.position);
 
-            float dot = Vector3.Dot(pair.Value.Head.transform.position - _camera.transform.position, _camera.transform.forward);
+            float dot = Vector3.Dot(pair.Value.Body.transform.position - _camera.transform.position, _camera.transform.forward);
             if (pos.x >= 0 && pos.y >= 0 && pos.x <= 1 && pos.y <= 1 && dot >= 0 && pair.Key.distance < _camera.farClipPlane)
             {
                 pair.Key.layer = 1;
@@ -55,7 +55,7 @@ public class AIView : Action {
             {
                 pair.Key.layer = 0;
             }
-            mAiKnowledge.Targets.Add(pair.Key,pair.Value);
+            mAiKnowledge.Targets[pair.Key] = pair.Value;
         }
 
         Knowledge.SetValue(mAiKnowledge);

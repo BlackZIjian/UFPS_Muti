@@ -18,7 +18,9 @@ public class TurnToTarget : Action
 
     private AIKnowledge mAiKnowledge;
 
-    private float moveRate = 2.5f;
+    private float moveRate = 2f;
+
+    private float randomPixel = 2.5f;
 
     public override void OnAwake()
     {
@@ -40,10 +42,14 @@ public class TurnToTarget : Action
         if (mAiKnowledge.Targets == null || mAiKnowledge.Targets.Count <= 0)
             return TaskStatus.Success;
 
-        Transform targetTansform = mAiKnowledge.Targets.Values[0].Head.transform;
-        Vector3 viewportPos = _camera.WorldToViewportPoint(targetTansform.transform.position + new Vector3(0,0.5f,0));
-        float mouseX = (int) ((viewportPos.x - 0.5f) / 0.001f) * moveRate * 0.015f;
-        float mouseY = (int) ((viewportPos.y - 0.5f) / 0.001f) * moveRate * 0.015f;
+        Transform targetTansform = mAiKnowledge.Targets.Values[0].Body.transform;
+        Vector3 offset = Vector3.Cross(targetTansform.position - transform.position, Vector3.up).normalized / 2;
+        float pixelHeight = 1f / Screen.height;
+        float pixelWidth = 1f / Screen.width;
+        Vector3 viewOffset = new Vector3(Random.Range(-randomPixel * pixelWidth,randomPixel * pixelWidth),Random.Range(-randomPixel * pixelHeight,randomPixel * pixelHeight),0);
+        Vector3 viewportPos = _camera.WorldToViewportPoint(targetTansform.transform.position + offset) + viewOffset;
+        float mouseX = (viewportPos.x - 0.5f) * moveRate;
+        float mouseY = (viewportPos.y - 0.5f)  * moveRate ;
         if (Vector3.Dot(targetTansform.position - _camera.transform.position, _camera.transform.forward) < 0)
         {
             mouseX = 1;

@@ -1,4 +1,4 @@
-OSXStandalone
+WindowsStandalone
 ed1894c3690d63d6cc61da4865b7b845 Assembly-CSharp.dll:.vp_ItemPickup
 097bdc7692ac408d981b942d1aaa7059 Assembly-CSharp.dll:.vp_SurfaceManager
 82c8c8940439d24517b71a242f62fbc3 Assembly-CSharp.dll:.HighlightOwnedGameObj
@@ -171,6 +171,7 @@ e9bdabf9265d758d56f01bb188916fa8 UnityEngine.Networking.dll:UnityEngine.Networki
 e7711a1c0c3387d2faa562b6c26b6c71 Assembly-CSharp.dll:.vp_FPSDemo2
 43435777b02c68adcc952160e47fbab1 Assembly-CSharp.dll:.vp_Effect
 7bc91c0e077c21a7c2ee5abdd3bdcbcb Assembly-CSharp.dll:.vp_HealthPowerup
+05524b8f659e7bfe5756d1335fec24ba Assembly-CSharp.dll:.vp_AIPlayerEventHandler
 1428998ede19e1468676a2ab2f655b12 Assembly-CSharp.dll:.vp_MPSinglePlayerTest
 9de3a22eca9aefadba2d10d5987cefe3 UnityEngine.SpatialTracking.dll:UnityEngine.SpatialTracking.TrackedPoseDriver
 05524b8f659e7bfe5756d1335fec24ba Assembly-CSharp.dll:.vp_MPPlayerStats
@@ -193,6 +194,7 @@ d7c3cc9e6aeec9a00634f6abffbe35e2 Assembly-CSharp.dll:.ConnectAndJoinRandom
 3a878f0c6a46f916712d4aa77050b43b Assembly-CSharp.dll:.vp_Remover
 dc07d7ad69b399a46e92c483bf1c04ca UnityEngine.Analytics.dll:UnityEngine.Analytics.AnalyticsTracker
 55dfb42aafe2c0c7f39df0b0a1e6b134 Assembly-CSharp.dll:.vp_WeaponThrower
+193f2e2ad9963dd8555bcfbce5fc2ee7 Assembly-CSharp.dll:.vp_AIRogball
 bc68edb0af574bf79f9550ead8ebae5c UnityEngine.HoloLens.dll:UnityEngine.Audio.AudioSpatializerMicrosoft
 05524b8f659e7bfe5756d1335fec24ba UnityEngine.HoloLens.dll:UnityEngine.EventSystems.HoloLensInput
 463516d5b5fe8e67a0a24c48f2095b04 UnityEngine.HoloLens.dll:UnityEngine.EventSystems.HoloLensInputModule
@@ -383,12 +385,15 @@ c2275a8bfbb9f9942cad75ecdfded41d UnityEngine.HoloLens.dll:UnityEngine.XR.WSA.Spa
 57aaa7c155598fce8a7cbd1245417e31 Assembly-CSharp.dll:.vp_DMTeamManager
 ee8540d1efea9148410a914295c889e3 Assembly-CSharp.dll:.OnJoinedInstantiate
 f6ddba1ad52b302106ee7202f1ca771a Assembly-CSharp.dll:.vp_NameTag
+1c52ff59f3e299f23676d9477a5f9cd5 Assembly-CSharp.dll:.PlayerTransform
 fe180736ec3bd9cf69fd20bbec04acfb Assembly-CSharp.dll:ExitGames.Demos.DemoAnimator.LoaderAnime
 05524b8f659e7bfe5756d1335fec24ba Assembly-CSharp.dll:.OnClickRequestOwnership
 05524b8f659e7bfe5756d1335fec24ba Assembly-CSharp.dll:.vp_PlayerClimbFixes
+28fb97375a8fca1ac481d3dea2dbc0c5 Assembly-CSharp.dll:.vp_AIBodyAnimator
 05524b8f659e7bfe5756d1335fec24ba Assembly-CSharp.dll:.vp_FPPlayerEventHandler
 1f4782fb6ee6abed6e0c160facda37b3 Assembly-CSharp.dll:.vp_PlayerInventory
 1a0954ae98b100a95a9b078afdbe8466 Assembly-CSharp.dll:.vp_SurfaceType
+eaadf17221c034fca52f799a78771e13 Assembly-CSharp.dll:.vp_AICamera
 6b7f3b627f03aa2dae54ad0ecb0a7d7a Assembly-CSharp.dll:.PhotonLagSimulationGui
 8e75c7ff572e377afe5aec0a3c77276b Assembly-CSharp.dll:.PickupCamera
 e29eedec83444c5ff91ad08de30f1219 Assembly-CSharp.dll:.GUICustomAuth
@@ -507,7 +512,3 @@ a9e1c36c671666e79706791e556d5100 Vuforia.UnityExtensions.dll:Vuforia.VuMarkBehav
 05524b8f659e7bfe5756d1335fec24ba Vuforia.UnityExtensions.dll:Vuforia.WireframeTrackableEventHandler
 15bea26698002c6c4a3087131232ce5c Vuforia.UnityExtensions.dll:Vuforia.WordBehaviour
 54a26a95db9c623b6eb6fc01ae3ef891 Assembly-CSharp.dll:.CubeExtra
-05524b8f659e7bfe5756d1335fec24ba Assembly-CSharp.dll:.vp_AIPlayerEventHandler
-eaadf17221c034fca52f799a78771e13 Assembly-CSharp.dll:.vp_AICamera
-28fb97375a8fca1ac481d3dea2dbc0c5 Assembly-CSharp.dll:.vp_AIBodyAnimator
-193f2e2ad9963dd8555bcfbce5fc2ee7 Assembly-CSharp.dll:.vp_AIRogball
